@@ -6,7 +6,8 @@ const View = () => {
   let navigate = useNavigate();
   let data = JSON.parse(localStorage.getItem('users')) || [];
   const [record, setRecord] = useState(data)
-
+  const [mStatus, setMStatus] = useState([]);
+  const [mDelete, setMDelete] = useState([])
   const handleDelete = (id) => {
     let ans = confirm("Delete User??");
     if (ans) {
@@ -15,6 +16,64 @@ const View = () => {
       localStorage.setItem('users', JSON.stringify(filterDel));
     }
   }
+
+  const MultipleStatus = (id, checked) => {
+    let all = [...mStatus];
+    if (checked) {
+      all.push(id);
+    }
+    else {
+      all = all.filter((val) => val !== id);
+    }
+    setMStatus(all)
+  }
+
+  const handleMultipleStatus = () => {
+    if (mStatus.length > 0) {
+      let filterStatus = record.map((val) => {
+        if (mStatus.includes(val.id)) {
+          if (val.status == "deactive") {
+            val.status = "active"
+          }
+          else {
+            val.status = "deactive"
+          }
+        }
+        return val;
+      })
+      setRecord(filterStatus);
+      localStorage.setItem('users', JSON.stringify(filterStatus));
+      setMStatus("");
+    }
+    else {
+      alert("Please select at least one user to change status");
+    }
+  }
+
+  // multiple  delete
+  const MultipleDelete = (id, checked) => {
+    let all = [...mDelete];
+    if (checked) {
+      all.push(id);
+    }
+    else {
+      all = all.filter((val) => val.id !== id);
+    }
+    setMDelete(all);
+  }
+
+  const handleMultipleDelete = () => {
+    if (mDelete.length > 0) {
+      let filteredData = record.filter((val) => !mDelete.includes(val.id));
+      setRecord(filteredData);
+      localStorage.setItem('users', JSON.stringify(filteredData));
+      setMDelete("");
+    }
+    else {
+      alert("Please select at least one user to delete");
+    }
+  }
+
   return (
     <div>
       <div className="container mt-5">
@@ -32,9 +91,14 @@ const View = () => {
                   <th scope="col">Name</th>
                   <th scope="col">Email</th>
                   <th scope="col">Password</th>
+                  <th>Status</th>
                   <th>Action</th>
-                  <th>M-Status</th>
-                  <th>M-Del</th>
+                  <th>
+                    <button className='btn btn-light border' onClick={() => handleMultipleStatus()}>M-Status</button>
+                  </th>
+                  <th>
+                    <button className='btn btn-light border' onClick={() => handleMultipleDelete()}>M-Del</button>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -47,12 +111,27 @@ const View = () => {
                         <td>{val.email}</td>
                         <td>{val.password}</td>
                         <td>
+                          {
+                            val.status === 'deactive' ? (
+                              <button className='btn btn-secondary'>{val.status}</button>
+                            ) : (
+                              <button className='btn btn-success'>{val.status}</button>
+                            )
+                          }
+                        </td>
+                        <td>
                           <span>
                             <button className='btn btn-danger' onClick={() => handleDelete(val.id)}>Del</button>
                           </span>
                           <span>
                             <button className='btn btn-primary ms-2' onClick={() => navigate('/edit', { state: val })}>Edit</button>
                           </span>
+                        </td>
+                        <td>
+                          <input type="checkbox" onChange={(e) => MultipleStatus(val.id, e.target.checked)} checked={mStatus.includes(val.id)} />
+                        </td>
+                        <td>
+                          <input type="checkbox" onChange={(e) => MultipleDelete(val.id, e.target.checked)} checked={mDelete.includes(val.id)} />
                         </td>
                       </tr>
                     )

@@ -13,7 +13,7 @@ const Add = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     let obj = {
-      id: Date.now(), name, email, password, status
+      id: Date.now(), name, email, password, status: 'deactive'
     }
     let newObj = [...record, obj];
     setRecord(newObj);

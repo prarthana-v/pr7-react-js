@@ -21,7 +21,7 @@ const View = () => {
         <div className="row justify-content-center align-items-center">
           <div className="col-md-10 border shadow pt-4 p-5">
             <div className=" d-flex justify-content-between mb-4">
-              <h3 className='text-center text-uppercase'>Login Form</h3>
+              <h3 className='text-center text-uppercase'>Users</h3>
               <Link to={'/'}>Add</Link>
             </div>
 

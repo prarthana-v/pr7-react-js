@@ -21,11 +21,24 @@ const Edit = () => {
 
   useEffect(() => {
     setname(location?.state?.name)
+    setemail(location?.state?.email)
     setPassword(location?.state?.password)
   }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let updatedData = record.map((item) => {
+      if (item.id === location.state.id) {
+        return { ...item, name, email, password };
+      }
+      return item;
+    })
+    setRecord(updatedData)
+    localStorage.setItem('users', JSON.stringify(updatedData));
+    alert('User Edited...')
+    setTimeout(() => {
+      navigate('/view')
+    }, 2000)
   }
 
   return (
@@ -34,7 +47,7 @@ const Edit = () => {
         <div className="row justify-content-center align-items-center">
           <div className="col-md-7 border shadow pt-4 p-5">
             <div className=" d-flex justify-content-between mb-4">
-              <h3 className='text-center text-uppercase'>Login Form</h3>
+              <h3 className='text-center text-uppercase'>Edit Form</h3>
               <Link to={'/view'}>View</Link>
             </div>
             <form onSubmit={handleSubmit}>
